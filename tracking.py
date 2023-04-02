@@ -10,11 +10,35 @@ def send_landmarks_to_server(host, port, data):
     client_socket.sendall(data.encode('utf-8'))
     client_socket.close()
 
+previous_smoothed_landmarks = None
+smoothing_factor = 0.5
+
 # Convert landmarks to a JSON object
 def landmarks_to_json(landmarks):
+    global previous_smoothed_landmarks
+    
     json_data = []
-    for landmark in landmarks.landmark:
-        json_data.append({"x": landmark.x -0.5, "y": landmark.y-0.5, "z": landmark.z-0.5})
+    landmark_list = []
+    
+    for index, landmark in enumerate(landmarks.landmark):
+        landmark_dict = {
+                "x": landmark.x - 0.5, 
+                "y": landmark.y - 0.5, 
+                "z": landmark.z - 0.5
+                }
+         
+        if previous_smoothed_landmarks is not None:
+            landmark_dict = {
+                "x": (landmark.x -0.5) * (1 - smoothing_factor) + previous_smoothed_landmarks[index]["x"]  * smoothing_factor, 
+                "y": (landmark.y-0.5) * (1 - smoothing_factor) + previous_smoothed_landmarks[index]["y"]  * smoothing_factor, 
+                "z": (landmark.z-0.5) * (1 - smoothing_factor) + previous_smoothed_landmarks[index]["z"]  * smoothing_factor
+                }
+            
+        landmark_list.append(landmark_dict)
+        json_data.append(landmark_dict)
+            
+    previous_smoothed_landmarks = landmark_list
+            
     return json.dumps(json_data)
 
 def is_closed_fist(landmarks):
