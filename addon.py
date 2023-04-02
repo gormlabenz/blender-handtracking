@@ -53,7 +53,7 @@ def update_landmarks():
         location = (
             landmark['x'] * scale_factor,
             landmark['z'] * scale_factor,
-            landmark['y'] * -scale_factor)
+            landmark['y'] * - scale_factor)
 
         sphere = bpy.data.objects.get(sphere_name)
         if sphere is None:
@@ -61,29 +61,35 @@ def update_landmarks():
         else:
             sphere.location = location
             
-original_camera_position = None
+original_index_finger_tip = None
 
 def update_camera_position(closed_fist, landmark_data):
-    global original_camera_position
-
-    if not closed_fist:
-        return
-
-    if original_camera_position is None:
-        original_camera_position = bpy.data.objects['Camera'].location.copy()
-
+    global original_index_finger_tip
+    
     # Get the index finger tip landmark
     index_finger_tip = landmark_data[8]
 
     # Calculate the new camera position relative to the original position
-    camera_position = (
-        original_camera_position.x + index_finger_tip['x'] * scale_factor,
-        original_camera_position.y + index_finger_tip['z'] * scale_factor,
-        original_camera_position.z + index_finger_tip['y'] * -scale_factor
-    )
+    if original_index_finger_tip:
+        camera_position = (
+            index_finger_tip['x'] - original_index_finger_tip[0],
+            index_finger_tip['z'] - original_index_finger_tip[1],
+            index_finger_tip['y'] - original_index_finger_tip[2] 
+        )
+    else:
+        camera_position = (
+            index_finger_tip['x'],
+            index_finger_tip['z'],
+            index_finger_tip['y'] 
+        )
 
-    # Move the camera to the new position
+    if not closed_fist:
+        original_index_finger_tip = camera_position
+        return
+
+    # Move the camera to the new position    
     bpy.data.objects['Camera'].location = camera_position
+    
 class TimerOperator(bpy.types.Operator):
     bl_idname = "wm.timer_operator"
     bl_label = "Timer Operator"
