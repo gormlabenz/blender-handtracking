@@ -13,27 +13,18 @@ Blender Handtracking is a powerful addon that enables you to control the Blender
 ## Installation
 
 1. Clone this repository or download it as a ZIP file.
-2. Install the required Python packages:```
-   Copy codepip install -r requirements.txt
-
-   ```
-
-   ```
-
-3. Navigate to the repository folder and start the `server.py` script:```
-   Copy codepython server.py
-
-   ```
-
-   ```
-
-4. Start the `tracking.py` script in a separate terminal/command prompt:```
-   Copy codepython tracking.py
-
-   ```
-
-   ```
-
+2. Install the required Python packages:
+```
+pip install -r requirements.txt
+```
+3. Navigate to the repository folder and start the `server.py` script:
+```
+python server.py
+```
+4. Start the `tracking.py` script in a separate terminal/command prompt:
+```
+python tracking.py
+```
 5. Open Blender and go to `Edit > Preferences > Add-ons > Install`.
 6. Navigate to the repository folder and select the `addon.py` file to install the addon.
 
