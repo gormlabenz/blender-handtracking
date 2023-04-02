@@ -28,7 +28,7 @@ def update_landmarks():
     port = 12345
     
     try:
-        landmark_data_str = receive_landmarks_from_server(host, port)
+        response_data_str = receive_landmarks_from_server(host, port)
     except ConnectionRefusedError:
         print(f"Connection to {host}:{port} refused")
         return
@@ -39,23 +39,51 @@ def update_landmarks():
         print(f"Error: {e}")
         return
 
-    # Process landmark data
-    landmark_data = json.loads(landmark_data_str)
+    # Process response data
+    response_data = json.loads(response_data_str)
+    landmark_data = json.loads(response_data['landmarks'])
+    closed_fist = response_data['closed_fist']
+
+    # Update the camera position if a closed fist is detected
+    update_camera_position(closed_fist, landmark_data)
 
     # Iterate through landmarks and create/update spheres in Blender
     for index, landmark in enumerate(landmark_data):
         sphere_name = f"landmark_{index}"
         location = (
-            landmark['x'] * scale_factor, 
+            landmark['x'] * scale_factor,
             landmark['z'] * scale_factor,
-            landmark['y'] * - scale_factor) 
+            landmark['y'] * -scale_factor)
 
         sphere = bpy.data.objects.get(sphere_name)
         if sphere is None:
             create_sphere(sphere_name, location)
         else:
             sphere.location = location
+            
+original_camera_position = None
 
+def update_camera_position(closed_fist, landmark_data):
+    global original_camera_position
+
+    if not closed_fist:
+        return
+
+    if original_camera_position is None:
+        original_camera_position = bpy.data.objects['Camera'].location.copy()
+
+    # Get the index finger tip landmark
+    index_finger_tip = landmark_data[8]
+
+    # Calculate the new camera position relative to the original position
+    camera_position = (
+        original_camera_position.x + index_finger_tip['x'] * scale_factor,
+        original_camera_position.y + index_finger_tip['z'] * scale_factor,
+        original_camera_position.z + index_finger_tip['y'] * -scale_factor
+    )
+
+    # Move the camera to the new position
+    bpy.data.objects['Camera'].location = camera_position
 class TimerOperator(bpy.types.Operator):
     bl_idname = "wm.timer_operator"
     bl_label = "Timer Operator"

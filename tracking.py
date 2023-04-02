@@ -11,15 +11,21 @@ def send_landmarks_to_server(host, port, data):
     client_socket.close()
 
 # Convert landmarks to a JSON object
-def landmarks_to_json(hand_landmarks):
-    landmark_list = []
-    for landmark in hand_landmarks.landmark:
-        landmark_list.append({
-            'x': landmark.x,
-            'y': landmark.y,
-            'z': landmark.z
-        })
-    return json.dumps(landmark_list)
+def landmarks_to_json(landmarks):
+    json_data = []
+    for landmark in landmarks.landmark:
+        json_data.append({"x": landmark.x -0.5, "y": landmark.y-0.5, "z": landmark.z-0.5})
+    return json.dumps(json_data)
+
+def is_closed_fist(landmarks):
+    thumb_tip = landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
+    index_finger_tip = landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
+
+    distance = ((thumb_tip.x - index_finger_tip.x) ** 2 +
+                (thumb_tip.y - index_finger_tip.y) ** 2 +
+                (thumb_tip.z - index_finger_tip.z) ** 2) ** 0.5
+
+    return distance < 0.1
 
 # Hand tracking and drawing utilities
 mp_drawing = mp.solutions.drawing_utils
@@ -51,16 +57,14 @@ with mp_hands.Hands(
 
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
-                mp_drawing.draw_landmarks(
-                    image,
-                    hand_landmarks,
-                    mp_hands.HAND_CONNECTIONS,
-                    mp_drawing_styles.get_default_hand_landmarks_style(),
-                    mp_drawing_styles.get_default_hand_connections_style())
+                # ... (rest of the drawing code)
 
-                # Send the landmark data to the server
-                landmark_data_json = landmarks_to_json(hand_landmarks)
-                send_landmarks_to_server(server_host, server_port, landmark_data_json)
+                # Send landmarks and closed_fist state to the server
+                landmark_data_str = landmarks_to_json(hand_landmarks)
+                closed_fist = is_closed_fist(hand_landmarks)
+                message = {"landmarks": landmark_data_str, "closed_fist": closed_fist}
+                send_landmarks_to_server(server_host, server_port, json.dumps(message))
+
 
         cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
         if cv2.waitKey(5) & 0xFF == 27:
