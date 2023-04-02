@@ -1,7 +1,6 @@
 import bpy
 import socket
 import json
-import time
 
 scale_factor = 10
 scale_sphere = 0.3
@@ -27,7 +26,18 @@ def create_sphere(name, location):
 def update_landmarks():
     host = "localhost"
     port = 12345
-    landmark_data_str = receive_landmarks_from_server(host, port)
+    
+    try:
+        landmark_data_str = receive_landmarks_from_server(host, port)
+    except ConnectionRefusedError:
+        print(f"Connection to {host}:{port} refused")
+        return
+    except ConnectionResetError:
+        print(f"Connection to {host}:{port} reset")
+        return
+    except Exception as e:
+        print(f"Error: {e}")
+        return
 
     # Process landmark data
     landmark_data = json.loads(landmark_data_str)
@@ -49,13 +59,16 @@ def update_landmarks():
 class TimerOperator(bpy.types.Operator):
     bl_idname = "wm.timer_operator"
     bl_label = "Timer Operator"
+    bl_label = "Handtracking"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Tools"
 
     _timer = None
 
     def modal(self, context, event):
         if event.type == 'TIMER':
             update_landmarks()
-            time.sleep(0.05)  # Add a small delay (50 milliseconds)
 
         return {'PASS_THROUGH'}
 

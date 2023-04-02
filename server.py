@@ -1,5 +1,4 @@
 import socket
-import time
 
 received_landmarks = ""
 
@@ -34,7 +33,6 @@ def main():
                 print(f"Received landmarks: {received_landmarks}")
 
         client_socket.close()
-        time.sleep(0.05)  # Add a small delay (50 milliseconds)
 
 if __name__ == "__main__":
     main()
