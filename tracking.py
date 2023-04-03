@@ -7,7 +7,10 @@ import json
 def send_landmarks_to_server(host, port, data):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((host, port))
-    client_socket.sendall(data.encode('utf-8'))
+    try:
+        client_socket.sendall(data.encode('utf-8'))
+    except Exception as e:
+        print(f"Error: {e}")
     client_socket.close()
 
 previous_smoothed_landmarks = None

@@ -72,15 +72,15 @@ def update_camera_position(closed_fist, landmark_data):
     # Calculate the new camera position relative to the original position
     if original_index_finger_tip:
         camera_position = (
-            index_finger_tip['x'] - original_index_finger_tip[0],
-            index_finger_tip['z'] - original_index_finger_tip[1],
-            index_finger_tip['y'] - original_index_finger_tip[2] 
+            (index_finger_tip['x'] * scale_factor) - 0.5 - original_index_finger_tip[0],
+            (index_finger_tip['z'] * scale_factor) - 0.5 - original_index_finger_tip[1],
+            (index_finger_tip['y'] * - scale_factor) - 0.5 - original_index_finger_tip[2] 
         )
     else:
         camera_position = (
-            index_finger_tip['x'],
-            index_finger_tip['z'],
-            index_finger_tip['y'] 
+            (index_finger_tip['x'] * scale_factor) - 0.5,
+            (index_finger_tip['z'] * scale_factor) - 0.5,
+            (index_finger_tip['y'] * - scale_factor) - 0.5 
         )
 
     if not closed_fist:
@@ -108,7 +108,7 @@ class TimerOperator(bpy.types.Operator):
 
     def execute(self, context):
         wm = context.window_manager
-        self._timer = wm.event_timer_add(1.0 / 30.0, window=context.window)
+        self._timer = wm.event_timer_add(1.0 / 15.0, window=context.window)
         wm.modal_handler_add(self)
         return {'RUNNING_MODAL'}
 
