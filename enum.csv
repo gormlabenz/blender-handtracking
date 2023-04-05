@@ -1,0 +1,25 @@
+c4d_bone_name, mediapipe_index, mediapipe_name, realtive
+rThumb1,0,WRIST,True
+rCarpal1,0,WRIST,True
+rCarpal2,0,WRIST,True
+rCarpal3,0,WRIST,True
+rCarpal4,0,WRIST,True
+rForearmTwist,0,WRIST,True
+rForearmBend,0,WRIST,True
+rHand,0,WRIST  ,False
+rThumb2,2,THUMB_MCP ,False
+rThumb3,3,THUMB_IP,False
+rIndex1,5,INDEX_FINGER_MCP ,False
+rIndex2,6,INDEX_FINGER_PIP,False
+rMid1,9,MIDDLE_FINGER_MCP,False
+rMid2,10,MIDDLE_FINGER_PIP,False
+rMid3,11,MIDDLE_FINGER_DIP,False
+rRing1,13,RING_FINGER_MCP,False
+rRing2,14,RING_FINGER_PIP,False
+rRing3,15,RING_FINGER_DIP,False
+rPinky1,17,PINKY_MCP,False
+rPinky2,18,PINKY_PIP,False
+rPinky3,19,PINKY_DIP,False
+
+
+
