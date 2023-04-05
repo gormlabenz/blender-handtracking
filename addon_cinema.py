@@ -40,13 +40,10 @@ def update_landmarks():
     except Exception as e:
         print(f"Error: {e}")
         return
+    
     # Process response data
     response_data = json.loads(response_data_str)
     landmark_data = json.loads(response_data['landmarks'])
-    closed_fist = response_data['closed_fist']
-
-    # Update the camera position if a closed fist is detected
-    # update_camera_position(closed_fist, landmark_data)
 
     doc = c4d.documents.GetActiveDocument()
 
@@ -69,36 +66,7 @@ def update_landmarks():
 
 original_index_finger_tip = None
 
-def update_camera_position(closed_fist, landmark_data):
-    global original_index_finger_tip
 
-    # Get the index finger tip landmark
-    index_finger_tip = landmark_data[8]
-
-    # Calculate the new camera position relative to the original position
-    if original_index_finger_tip:
-        camera_position = (
-            (index_finger_tip['x'] * scale_factor) - 0.5 - original_index_finger_tip[0],
-            (index_finger_tip['z'] * scale_factor) - 0.5 - original_index_finger_tip[1],
-            (index_finger_tip['y'] * - scale_factor) - 0.5 - original_index_finger_tip[2]
-        )
-    else:
-        camera_position = (
-            (index_finger_tip['x'] * scale_factor) - 0.5,
-            (index_finger_tip['z'] * scale_factor) - 0.5,
-            (index_finger_tip['y'] * - scale_factor) - 0.5
-        )
-
-    if not closed_fist:
-        original_index_finger_tip = camera_position
-        return
-
-    # Move the camera to the new position
-    doc = c4d.documents.GetActiveDocument()
-    bd = doc.GetActiveBaseDraw()
-    camera = bd.GetSceneCamera(doc)
-    camera.SetAbsPos(c4d.Vector(*camera_position))
-    
 PLUGIN_ID = 1060816  # Choose a unique plugin ID (check c4d.PLUGINFLAG)
 
 # Register the plugin
@@ -109,22 +77,6 @@ class TimerOperator(plugins.CommandData):
         return True
 
 if __name__ == "__main__":
-    """ bmp = c4d.bitmaps.BaseBitmap()
-    bmp.Init(100, 100)
-
-    result = plugins.RegisterCommandPlugin(
-        PLUGIN_ID,
-        "Handtracking",
-        0,
-        bmp,
-        "Handtracking for Cinema 4D",
-        TimerOperator())
-
-    if result:
-        print("Handtracking plugin registered successfully!")
-    else:
-        print("Handtracking plugin registration failed.") """
-
     # Run the main loop
     def main_thread():
         import time
