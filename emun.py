@@ -1,0 +1,23 @@
+rThumb1 = 0. WRIST
+rCarpal1 = 0. WRIST
+rCarpal2 = 0. WRIST
+rCarpal3 = 0. WRIST
+rCarpal4 = 0. WRIST
+
+rHand = 0. WRIST  
+rThumb2 = 2. THUMB_MCP 
+rThumb3 = 3. THUMB_IP
+rIndex1 = 5. INDEX_FINGER_MCP 
+rIndex2 = 6. INDEX_FINGER_PIP
+rMid1 = 9. MIDDLE_FINGER_MCP
+rMid2 = 10. MIDDLE_FINGER_PIP
+rMid3 = 11. MIDDLE_FINGER_DIP
+rRing1 = 13. RING_FINGER_MCP
+rRing2 = 14. RING_FINGER_PIP
+rRing3 = 15. RING_FINGER_DIP
+rPinky1 = 17. PINKY_MCP
+rPinky2 = 18. PINKY_PIP
+rPinky3 = 19. PINKY_DIP
+
+
+
